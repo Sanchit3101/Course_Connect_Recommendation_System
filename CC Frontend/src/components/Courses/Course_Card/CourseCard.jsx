@@ -1,0 +1,66 @@
+import React,{useState} from 'react';
+import './MarvellousMacawArticle.css';
+import { Link,useNavigate } from 'react-router-dom';
+import compare from './compare.png'
+import { useCompareContext } from '../../../custom_hooks/CompareContext';
+
+const CourseCard = ({data}) => {
+
+    const [desc, setDesc] = useState(data.description.slice(0, 80));
+  const [readMore, setReadMore] = useState("Read More...");
+
+  const handleReadMore = () => {
+    if (desc === data.description.slice(0, 80)) {
+      setDesc(data.description);
+      setReadMore("Read Less...");
+    } else {
+      setDesc(data.description.slice(0, 80));
+      setReadMore("Read More...");
+    }
+  };
+
+  const { setCompareData } = useCompareContext();
+  
+
+  const handleCompare = () => {
+    console.log("Add to Compare clicked for course ID:", data.ID);
+    setCompareData((prev) => {
+      const updatedCompareData = [...prev, data.ID].slice(-2);
+      console.log("Updated compareData:", updatedCompareData);
+      return updatedCompareData;
+    });
+  };
+
+  
+  return (
+    <div className="card-ontainer">
+      <div className="square">
+        <Link to={`/courses/${data.ID}`}>
+            <img
+            src={data.images}
+            alt="Course Cover"
+            className="mask"
+            />
+        </Link>
+        <div className="h1">
+        <Link to={`/courses/${data.ID}`} className='link-title'>
+            {data.title}
+        </Link>
+        </div>
+        <p onClick={handleReadMore} className='courseCard-desc'>
+        {desc} <span onClick={handleReadMore}> {readMore} </span>
+        </p>
+        <div className='coursecard-btns'>
+            <Link to={`${data.ID}`} className='button'>
+                Read More
+            </Link>
+            <div className="compare-img-coursecard" onClick={handleCompare}>
+              <img src={compare} alt="Compare"  />
+            </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default CourseCard;
